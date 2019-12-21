@@ -56,20 +56,26 @@ namespace MavenSharp
             }
 
             /**
+             * After these 3 standard versioning numbers we must still allow an unlimited ammount of additional number tokens.
+             * At the very end of the version string, after all the leading integer parts, 
+             * there CAN be EITHER a build number (-xxx) or a qualifier which is a string token
+             * So next we skip all remaining integer tokens and then check for build/qualifier
+             */
+            Stream.Consume_While(tok => tok?.Type == VersionTokenType.Integer);
+
+            /**
+             * 
              * Build number is always specified by the pattern: "-###", 
              * this pattern by nature will create a sublist item in the token stream. 
              * So look for it.
              */
-            if (!Stream.atEnd && Stream.Next.Type == VersionTokenType.List)
+            if (!Stream.atEnd && Stream.Last.Type == VersionTokenType.List)
             {
                 // It's a build number ONLY IF there is just a single number after the hypen
-                var list = ((ListToken)Stream.Next);
+                var list = ((ListToken)Stream.Last);
                 if (list.Count == 1)
                 {
-                    list = (ListToken)Stream.Consume();
-                    Stream = new DataConsumer<IVersionToken>(new ReadOnlyMemory<IVersionToken>(list.ToArray()));
-
-                    if (!Stream.atEnd && Stream.Next.Type == VersionTokenType.Integer)
+                    if (list[0].Type == VersionTokenType.Integer)
                     {
                         build = ((IntegerToken)Stream.Consume()).Value;
                     }
@@ -89,9 +95,9 @@ namespace MavenSharp
                     qualifier = generic.Value.Substring(idx+1);
                 }
             }
-            else if (!Stream.atEnd && Stream.Next.Type == VersionTokenType.String)
+            else if (!Stream.atEnd && Stream.Last.Type == VersionTokenType.String)
             {
-                qualifier = Stream.Consume().ToString();
+                qualifier = Stream.Last.ToString();
             }
         }
         #endregion

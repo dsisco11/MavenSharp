@@ -21,8 +21,6 @@ namespace MavenSharp
         /// The artifact name
         /// </summary>
         public ArtifactIdentifier Name { get; protected set; }
-
-        protected Dictionary<string, string> Versions = new Dictionary<string, string>();
         #endregion
 
         #region Constructors
@@ -120,12 +118,12 @@ namespace MavenSharp
         protected async Task<ArtifactIdentifier> Resolve_Targeted_Package(MavenRepository Repository)
         {
             ArtifactIdentifier Ident = Name;
-            if (Name.Version.Qualifier.Equals("+"))
+            if (Ident?.Version?.Qualifier?.Equals("+") ?? false)
             {
                 // Find the highest version above the one specified in the ArtifactName
-                IEnumerable<ArtifactVersion> VersionsList = await Repository.Get_Versions_For_Package(Name);
-                var TargetVersion = Resolve_Version(VersionsList, Name.Version);
-                Ident = Name.WithVersion(TargetVersion);
+                IEnumerable<ArtifactVersion> VersionsList = await Repository.Get_Versions_For_Package(Ident);
+                var TargetVersion = Resolve_Version(VersionsList, Ident.Version);
+                Ident = Ident.WithVersion(TargetVersion);
             }
             else if (Ident.isSnapshot)
             {// TODO: Add support for snapshot versions

@@ -93,6 +93,22 @@ namespace MavenSharp
         /// </summary>
         public T NextNextNext => Peek(2);
 
+
+        /// <summary>
+        /// Returns the last item to be consumed, equivalent to calling Peek(Remaining-1)
+        /// </summary>
+        public T Last => Peek(Remaining - 1);
+
+        /// <summary>
+        /// Returns the next-to-last item to be consumed, equivalent to calling Peek(Remaining-2)
+        /// </summary>
+        public T LastLast => Peek(Remaining-2);
+
+        /// <summary>
+        /// Returns the next-to-last item to be consumed, equivalent to calling Peek(Remaining-3)
+        /// </summary>
+        public T LastLastLast => Peek(Remaining - 3);
+
         /// <summary>
         /// Returns whether the stream position is currently at the end of the stream
         /// </summary>
@@ -478,7 +494,7 @@ namespace MavenSharp
         private bool _consume_while(Predicate<T> Predicate)
         {
             bool consumed = Predicate(Next);
-            while (Predicate(Next) && !atEnd) { Consume(); }
+            while (!atEnd && Predicate(Next)) { Consume(); }
 
             return consumed;
         }
