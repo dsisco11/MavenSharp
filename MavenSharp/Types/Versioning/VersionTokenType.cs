@@ -1,5 +1,5 @@
 ﻿
-namespace MavenArtifactDownloader.Types
+namespace MavenSharp.Types
 {
     public enum VersionTokenType : int
     {

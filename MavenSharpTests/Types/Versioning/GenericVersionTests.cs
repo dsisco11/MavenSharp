@@ -1,10 +1,10 @@
 ﻿using Xunit;
-using MavenArtifactDownloader;
+using MavenSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MavenArtifactDownloader.Tests
+namespace MavenSharp.Tests
 {
     public class GenericVersionTests
     {

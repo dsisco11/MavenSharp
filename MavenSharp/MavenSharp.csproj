@@ -2,10 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/dsisco11/MavenSharp</PackageProjectUrl>
+    <PackageTags>Maven, Artifact, Download</PackageTags>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <RepositoryUrl>https://github.com/dsisco11/MavenSharp</RepositoryUrl>
+    <Authors>David Sisco</Authors>
+    <Company>Vault.tf</Company>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Types\Versioning\ArtifactVersion.old.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

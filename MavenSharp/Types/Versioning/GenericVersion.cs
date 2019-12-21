@@ -1,11 +1,11 @@
-﻿using MavenArtifactDownloader.Types;
-using MavenArtifactDownloader.Types.Versioning;
+﻿using MavenSharp.Types;
+using MavenSharp.Types.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace MavenArtifactDownloader
+namespace MavenSharp
 {
     public class GenericVersion : IEquatable<GenericVersion>, IComparable<GenericVersion>
     {
@@ -92,7 +92,26 @@ namespace MavenArtifactDownloader
                 list.Normalize();
             }
 
-            Items = Items;
+            Canonical = Items.ToString();
+        }
+
+        public GenericVersion(ListToken items)
+        {
+            Items = items;
+
+            ListToken list = items;
+            list.Normalize();
+            var iter = list.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                if (iter.Current.Type == VersionTokenType.List)
+                {
+                    list = (ListToken)iter.Current;
+                    list.Normalize();
+                    iter = list.GetEnumerator();
+                }
+            }
+
             Canonical = Items.ToString();
         }
         #endregion
@@ -124,6 +143,28 @@ namespace MavenArtifactDownloader
 
         public override string ToString() => this.Value;
 
+
+        public override int GetHashCode()
+        {
+            const int factor = -1521134295;
+            const int seed = 0x51ed270b;
+            int hash = seed;
+            for (int i = 0; i<this.Items.Count; i++)
+            {
+                hash = (hash * factor) + this.Items[i].GetHashCode();
+            }
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is GenericVersion other)
+            {
+                return this.Equals(other);
+            }
+
+            return base.Equals(obj);
+        }
 
         public bool Equals([AllowNull] GenericVersion other)
         {

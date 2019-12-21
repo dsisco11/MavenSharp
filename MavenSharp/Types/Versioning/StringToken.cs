@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace MavenArtifactDownloader.Types.Versioning
+namespace MavenSharp.Types.Versioning
 {
     public class StringToken : IVersionToken
     {
@@ -79,6 +79,21 @@ namespace MavenArtifactDownloader.Types.Versioning
                         throw new Exception($"Invalid item: {other}");
                     }
             }
+        }
+
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is IVersionToken other)
+            {
+                return this.Equals(other);
+            }
+            return base.Equals(obj);
         }
 
         public bool Equals([AllowNull] IVersionToken other)

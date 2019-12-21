@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MavenArtifactDownloader\MavenArtifactDownloader.csproj" />
+    <ProjectReference Include="..\MavenSharp\MavenSharp.csproj" />
   </ItemGroup>
 
 </Project>

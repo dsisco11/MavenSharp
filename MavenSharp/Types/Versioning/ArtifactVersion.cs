@@ -1,11 +1,11 @@
-﻿using MavenArtifactDownloader.Types;
-using MavenArtifactDownloader.Types.Versioning;
+﻿using MavenSharp.Types;
+using MavenSharp.Types.Versioning;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 
-namespace MavenArtifactDownloader
+namespace MavenSharp
 {
     public class ArtifactVersion : IEquatable<ArtifactVersion>, IComparable<ArtifactVersion>
     {
@@ -33,9 +33,13 @@ namespace MavenArtifactDownloader
         #endregion
 
         #region Constructors
-        public ArtifactVersion(string Version)
+        public ArtifactVersion(string Version) : this(new GenericVersion(Version))
         {
-            generic = new GenericVersion(Version);
+        }
+
+        public ArtifactVersion(GenericVersion Version)
+        {
+            generic = Version;
             DataConsumer<IVersionToken> Stream = new DataConsumer<IVersionToken>(new ReadOnlyMemory<IVersionToken>( generic.Items.ToArray() ));
 
             if (!Stream.atEnd && Stream.Next.Type == VersionTokenType.Integer)
@@ -77,12 +81,12 @@ namespace MavenArtifactDownloader
              * 1) The token stream has a string token at the end
              * 2) Version string contains a hypen(-) and we have no build number, the qualifier is EVERYTHING after the first hypen
              */
-            if (!build.HasValue && Version.Contains('-'))
+            if (!build.HasValue && generic.Value.Contains('-'))
             {
-                int idx = Version.IndexOf('-');
+                int idx = generic.Value.IndexOf('-');
                 if (idx > -1)
                 {
-                    qualifier = Version.Substring(idx+1);
+                    qualifier = generic.Value.Substring(idx+1);
                 }
             }
             else if (!Stream.atEnd && Stream.Next.Type == VersionTokenType.String)
@@ -94,6 +98,22 @@ namespace MavenArtifactDownloader
 
         public override string ToString() => generic.ToString();
 
+
+        public override int GetHashCode()
+        {
+            return generic.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ArtifactVersion other)
+            {
+                return this.Equals(other);
+            }
+
+            return base.Equals(obj);
+        }
+
         public bool Equals([AllowNull] ArtifactVersion other)
         {
             return CompareTo(other) == 0;
@@ -102,6 +122,29 @@ namespace MavenArtifactDownloader
         public int CompareTo([AllowNull] ArtifactVersion other)
         {
             return generic.CompareTo(other.generic);
+        }
+
+        /// <summary>
+        /// Returns an instance of this version without its qualifier
+        /// </summary>
+        /// <returns></returns>
+        public ArtifactVersion Get_Unqualified()
+        {
+            ListToken Tokens = new ListToken(generic.Items);
+            if (Tokens.Last().Type == VersionTokenType.String )
+            {
+                Tokens.Remove(Tokens.Last());
+            }
+            else if (Tokens.Last().Type == VersionTokenType.List)
+            {
+                ListToken list = (ListToken)Tokens.Last();
+                if (list.Count > 1 && list[0].Type != VersionTokenType.Integer)// This isnt a build number! So it's a qualifier, delete it...
+                {
+                    Tokens.Remove(Tokens.Last());
+                }
+            }
+
+            return new ArtifactVersion(new GenericVersion(Tokens));
         }
 
     }

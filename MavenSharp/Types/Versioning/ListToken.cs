@@ -9,13 +9,27 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-namespace MavenArtifactDownloader.Types.Versioning
+namespace MavenSharp.Types.Versioning
 {
     public class ListToken : List<IVersionToken>, IVersionToken
     {
+        #region Properties
         public readonly List<IVersionToken> Value = new List<IVersionToken>();
+        #endregion
 
+        #region Accessors
         public VersionTokenType Type => VersionTokenType.List;
+        #endregion
+
+        #region Constructors
+        public ListToken() : base()
+        {
+        }
+
+        public ListToken(IEnumerable<IVersionToken> collection) : base(collection)
+        {
+        }
+        #endregion
 
 
         /// <summary>
@@ -83,6 +97,28 @@ namespace MavenArtifactDownloader.Types.Versioning
                         throw new Exception($"Invalid item: {other}");
                     }
             }
+        }
+
+        public override int GetHashCode()
+        {
+            const int factor = -1521134295;
+            const int seed = 0x51ed270b;
+            int hash = seed;
+            for (int i = 0; i < this.Count; i++)
+            {
+                hash = (hash * factor) + this[i].GetHashCode();
+            }
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is IVersionToken other)
+            {
+                return this.Equals(other);
+            }
+
+            return base.Equals(obj);
         }
 
         public bool Equals([AllowNull] IVersionToken other)

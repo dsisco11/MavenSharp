@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Text;
 
-namespace MavenArtifactDownloader
+namespace MavenSharp
 {
     /// <summary>
     /// Holds the name of a Maven artifact and provides easy access to all the information it represents.
@@ -15,35 +15,38 @@ namespace MavenArtifactDownloader
         /// <summary>
         /// The name as specified
         /// </summary>
-        public readonly string Canonical;
+        public string Value { get; }
         /// <summary>
         /// Group name
         /// <para>EX: in "com.google.code.findbugs:jsr305:3.0.1" the Group is "com.google.code.findbugs"</para>
         /// </summary>
-        public readonly string Group;
+        public string Group { get; }
         /// <summary>
         /// Artifact name
         /// <para>EX: in "com.google.code.findbugs:jsr305:3.0.1" the Artifact is "jsr305"</para>
         /// </summary>
-        public readonly string Name;
+        public string Name { get; }
         /// <summary>
         /// Version number
         /// <para>EX: in "com.google.code.findbugs:jsr305:3.0.1" the Version is "3.0.1"</para>
         /// </summary>
-        public readonly ArtifactVersion Version;
+        public ArtifactVersion Version { get; }
 
         /// <summary>
         /// Classifier
         /// <para>EX: in "" the Classifier is ""</para>
         /// </summary>
-        public readonly string Classifier;
+        public string Classifier { get; }
 
         /// <summary>
         /// Extension
         /// <para>EX: in "com.google.code.findbugs:jsr305:3.0.1@zip" the Extension is "@zip"</para>
         /// </summary>
-        public readonly string Extension = "jar";
+        public string Extension { get; } = "jar";
+        #endregion
 
+        #region Accessors
+        public bool isSnapshot => this.Version?.Qualifier?.EndsWith("-snapshot", StringComparison.OrdinalIgnoreCase) ?? false;
         #endregion
 
         #region Constructors
@@ -55,7 +58,7 @@ namespace MavenArtifactDownloader
             }
             Contract.EndContractBlock();
 
-            Canonical = Descriptor;
+            Value = Descriptor;
 
             // Look for the extension first
             if (Descriptor.Contains('@'))

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace MavenArtifactDownloader.Types
+namespace MavenSharp.Types
 {
     /// <summary>
     /// Represents an item within a version string section (a number or string)

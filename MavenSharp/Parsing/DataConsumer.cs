@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
-namespace MavenArtifactDownloader
+namespace MavenSharp
 {
     /// <summary>
     /// Provides access to a genericized, consumable stream of data.
