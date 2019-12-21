@@ -1,2 +1,2 @@
 # MavenSharp
- A library for downloading maven artifacts from within a .net language.
+ A .net library for downloading artifacts from Apache Maven repositorys.
