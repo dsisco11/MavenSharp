@@ -86,6 +86,7 @@ namespace MavenSharp
             return false;
         }
 
+
         /// <summary>
         /// Downloads the artifact to the given <paramref name="DestinationDirectory"/>
         /// </summary>
@@ -97,9 +98,9 @@ namespace MavenSharp
         {
             MavenRepository MavenRepo = await Locate_Maven_Repository_For_Package(Repositorys, Name);
             ArtifactIdentifier Ident = await Resolve_Targeted_Package(MavenRepo);
-            Uri packageUrl = MavenRepo.Get_Package_Url(Name);
+            Uri packageUrl = MavenRepo.Get_Package_Url(Ident);
 
-            string filePath = Path.Combine(DestinationDirectory, Ident.Get_Path());
+            string filePath = await Get_Path(DestinationDirectory);
             if (Force)
             {
                 if (File.Exists(filePath))
@@ -111,6 +112,18 @@ namespace MavenSharp
             return await Download_File(packageUrl, filePath, null, progress);
         }
 
+
+        /// <summary>
+        /// Returns the path to the downloaded artifact within the <paramref name="DestinationDirectory"/>
+        /// </summary>
+        /// <param name="DestinationDirectory"></param>
+        /// <returns></returns>
+        public async Task<string> Get_Path(string DestinationDirectory)
+        {
+            MavenRepository MavenRepo = await Locate_Maven_Repository_For_Package(Repositorys, Name);
+            ArtifactIdentifier Ident = await Resolve_Targeted_Package(MavenRepo);
+            return Path.Combine(DestinationDirectory, Ident.Get_Path());
+        }
 
         /// <summary>
         /// Resolves the provided artifact identifier, which can contain wildcards such as (eg: '1.5.+'), to a specific version

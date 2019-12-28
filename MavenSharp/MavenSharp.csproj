@@ -10,10 +10,10 @@
     <RepositoryUrl>https://github.com/dsisco11/MavenSharp</RepositoryUrl>
     <Authors>David Sisco</Authors>
     <Company>Vault.tf</Company>
-    <Description>A .net library for downloading artifacts from Apache Maven repositorys</Description>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
-    <FileVersion>1.0.0.2</FileVersion>
-    <Version>1.0.2</Version>
+    <Description>A .net library for downloading artifacts asynchronously from Apache Maven repositorys.</Description>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
